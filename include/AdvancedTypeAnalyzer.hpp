@@ -8,51 +8,46 @@
 
 // ---------- Concepts ----------
 
+// Use decayed types so arrays/refs are handled naturally
+
+template <typename T>
+using dec_t = std::remove_cv_t<std::remove_reference_t<T>>;
+
 // Numeric type
 template <typename T>
-concept Numeric = std::is_arithmetic_v<T>;
+concept Numeric = std::is_arithmetic_v<dec_t<T>>;
 
-// String-like type
+// String-like type: std::string or const char* (including string literals)
 template <typename T>
 concept StringLike =
-    std::is_same_v<std::remove_cv_t<T>, std::string> ||
-    std::is_same_v<std::remove_cv_t<T>, const char*>;
+    std::is_same_v<std::decay_t<T>, std::string> ||
+    std::is_same_v<std::decay_t<T>, const char*>;
 
-// Pointer type
+// Pointer type (after decay)
 template <typename T>
-concept Pointer = std::is_pointer_v<T>;
+concept Pointer = std::is_pointer_v<std::decay_t<T>>;
 
-// Container type (must have value_type and begin()/end())
+// Container type: has nested value_type (we detect by presence of value_type)
 template <typename T>
-concept Container =
-requires(T a) {
-    typename T::value_type;
-    a.begin();
-    a.end();
+concept Container = requires {
+    typename std::decay_t<T>::value_type;
 };
 
 // ---------- Analyzer class ----------
 
 class AdvancedTypeAnalyzer {
 public:
+    // Entry point: deduce T from the passed value and print a description.
     template <typename T>
-    static void analyze(const T& value);
+    static void analyze(const T& /*value*/);
 
 private:
-    // Helper overloads for specific categories
-    template <Numeric T>
-    static void analyze_impl(const T&);
+    // Produce a textual description for a type T (decayed)
+    template <typename T>
+    static std::string type_description();
 
-    template <StringLike T>
-    static void analyze_impl(const T&);
-
-    template <Pointer T>
-    static void analyze_impl(const T&);
-
-    template <Container T>
-    static void analyze_impl(const T&);
-
-    // TODO: unsupported types should cause compile-time error (no fallback)
+    // No fallback overloads are provided intentionally so unsupported types
+    // will cause a compile-time error.
 };
 
 #endif // ADVANCED_TYPE_ANALYZER_HPP

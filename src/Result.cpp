@@ -1,47 +1,40 @@
 #include "Result.hpp"
 
-// Static factory methods
+// Template definitions
 template <class T, class E>
 Result<T, E> Result<T, E>::Ok(const T& value) {
-    // TODO: Return a Result holding a success value
-    // Hint: Use std::variant to store T
-    return Result<T, E>(std::variant<T, E>{});
+    return Result<T, E>(std::variant<T, E>(value));
 }
 
 template <class T, class E>
 Result<T, E> Result<T, E>::Err(const E& error) {
-    // TODO: Return a Result holding an error value
-    return Result<T, E>(std::variant<T, E>{});
+    return Result<T, E>(std::variant<T, E>(error));
 }
 
 template <class T, class E>
 bool Result<T, E>::is_ok() const noexcept {
-    // TODO: Return true if data_ holds T, false otherwise
-    return false;
+    return std::holds_alternative<T>(data_);
 }
 
 template <class T, class E>
 bool Result<T, E>::is_err() const noexcept {
-    // TODO: Return true if data_ holds E
-    return false;
+    return std::holds_alternative<E>(data_);
 }
 
 template <class T, class E>
 T Result<T, E>::unwrap() const {
-    // TODO:
-    // If it holds a T, return it.
-    // Otherwise, throw std::runtime_error("Tried to unwrap an error result")
-    throw std::runtime_error("not implemented");
+    if (std::holds_alternative<T>(data_))
+        return std::get<T>(data_);
+    throw std::runtime_error("Tried to unwrap an error result");
 }
 
 template <class T, class E>
 E Result<T, E>::unwrap_err() const {
-    // TODO:
-    // If it holds an E, return it.
-    // Otherwise, throw std::runtime_error("Tried to unwrap an ok result")
-    throw std::runtime_error("not implemented");
+    if (std::holds_alternative<E>(data_))
+        return std::get<E>(data_);
+    throw std::runtime_error("Tried to unwrap an ok result");
 }
 
-// Explicit template instantiation (to avoid linker issues for this exercise)
+// Explicit template instantiations
 template class Result<int, std::string>;
 template class Result<std::string, std::string>;

@@ -6,38 +6,53 @@
 ConfigManager::ConfigManager(const std::string& path)
     : filePath_(path)
 {
-    // TODO: Attempt to open the file for reading.
-    //       If it cannot be opened, throw std::runtime_error("File not found").
-    //       Otherwise, call load().
+    std::ifstream file(path);
+    if (!file.is_open()) {
+        throw std::runtime_error("File not found");
+    }
+    file.close();
+    load();
 }
 
 void ConfigManager::load()
 {
-    // TODO: Clear existing data_.
-    //       Read the file line by line.
-    //       Each line has format "key=value".
-    //       Ignore empty lines.
-    //       Split at the first '=' and store into data_.
-    //       Use RAII: file closes automatically when ifstream goes out of scope.
+    data_.clear();
+    std::ifstream file(filePath_);
+    std::string line;
+
+    while (std::getline(file, line)) {
+        if (line.empty()) continue;
+
+        std::size_t pos = line.find('=');
+        if (pos == std::string::npos) continue; // skip malformed lines
+
+        std::string key = line.substr(0, pos);
+        std::string value = line.substr(pos + 1);
+        data_[key] = value;
+    }
 }
 
 std::optional<std::string> ConfigManager::get(const std::string& key) const
 {
-    // TODO: Search for key in data_.
-    //       If found, return the value.
-    //       Otherwise, return std::nullopt.
+    auto it = data_.find(key);
+    if (it != data_.end())
+        return it->second;
     return std::nullopt;
 }
 
 void ConfigManager::set(const std::string& key, const std::string& value)
 {
-    // TODO: Insert or update (key, value) in the map.
+    data_[key] = value;
 }
 
 void ConfigManager::save() const
 {
-    // TODO: Open file in write mode (truncate).
-    //       If opening fails, throw std::runtime_error("Cannot save file").
-    //       Write all key=value pairs, one per line.
-    //       Ensure RAII safety (fstream closes automatically).
+    std::ofstream file(filePath_, std::ios::trunc);
+    if (!file.is_open()) {
+        throw std::runtime_error("Cannot save file");
+    }
+
+    for (const auto& [key, value] : data_) {
+        file << key << "=" << value << "\n";
+    }
 }

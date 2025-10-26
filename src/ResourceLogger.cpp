@@ -6,47 +6,72 @@
 ResourceLogger::ResourceLogger(const std::string& path)
     : filePath_(path)
 {
-    // TODO: Open the file in append mode.
-    //       If opening fails, throw std::runtime_error("Cannot open log file").
+    file_.open(filePath_, std::ios::app);
+    if (!file_.is_open()) {
+        throw std::runtime_error("Cannot open log file");
+    }
 }
 
 ResourceLogger::ResourceLogger(ResourceLogger&& other) noexcept
     : filePath_(std::move(other.filePath_))
 {
-    // TODO: Move file stream safely from other to this.
+    file_ = std::move(other.file_);
 }
 
 ResourceLogger& ResourceLogger::operator=(ResourceLogger&& other) noexcept
 {
-    // TODO: Handle self-assignment, close current file if open,
-    //       then move file_ and filePath_ from other.
+    if (this != &other) {
+        if (file_.is_open()) {
+            file_.close();
+        }
+        filePath_ = std::move(other.filePath_);
+        file_ = std::move(other.file_);
+    }
     return *this;
 }
 
 ResourceLogger::~ResourceLogger()
 {
-    // TODO: Ensure the file is properly closed.
+    if (file_.is_open()) {
+        file_.close();
+    }
 }
 
 void ResourceLogger::write(Level level, const std::string& message)
 {
-    // TODO:
-    // 1. Verify that the file is open.
-    // 2. Create a formatted log line: "[timestamp] [LEVEL] message"
-    // 3. Write it to the file and flush.
-    // 4. If any write fails, throw std::runtime_error("Failed to write log").
+    if (!file_.is_open()) {
+        throw std::runtime_error("File not open");
+    }
+
+    std::string timestamp = current_timestamp();
+    std::string levelStr = level_to_string(level);
+
+    file_ << "[" << timestamp << "] [" << levelStr << "] " << message << "\n";
+    file_.flush();
+
+    if (!file_) {
+        throw std::runtime_error("Failed to write log");
+    }
 }
 
 std::string ResourceLogger::level_to_string(Level level)
 {
-    // TODO: Convert Level enum to readable string ("INFO", "WARNING", "ERROR")
-    return {};
+    switch (level) {
+        case Level::INFO:    return "INFO";
+        case Level::WARNING: return "WARNING";
+        case Level::ERROR:   return "ERROR";
+        default:             return "UNKNOWN";
+    }
 }
 
 std::string ResourceLogger::current_timestamp()
 {
-    // TODO:
-    // Use std::chrono::system_clock and std::put_time to build a timestamp
-    // in format "YYYY-MM-DD HH:MM:SS"
-    return {};
+    using namespace std::chrono;
+    auto now = system_clock::now();
+    std::time_t t = system_clock::to_time_t(now);
+
+    std::tm tm = *std::localtime(&t);
+    std::ostringstream oss;
+    oss << std::put_time(&tm, "%Y-%m-%d %H:%M:%S");
+    return oss.str();
 }
