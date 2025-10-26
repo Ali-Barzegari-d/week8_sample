@@ -13,7 +13,7 @@ You will implement multiple modular components that demonstrate resource managem
 The lab consists of five graded tasks:
 
 - **ConfigManager** – file-based configuration management with exception safety.  
-- **Result<T, E>** – generic result type for error and success encapsulation.  
+- **Result<T, E>** – header-only generic result type; you will implement the methods using TODO hints.  
 - **TaskScheduler** – task execution pipeline with exception handling.  
 - **Advanced ResourceLogger** – RAII-based logging system with timestamps and move semantics.  
 - **AdvancedTypeAnalyzer** – compile-time type classification using C++20 concepts.  
@@ -58,19 +58,19 @@ Exception safety, RAII, file I/O, std::optional, resource management.
 
 ## 4. Task B — Result<T, E>
 
-You are given a templated class **Result<T, E>** similar to Rust’s Result.
+You are given a **header-only template class** `Result<T, E>` similar to Rust’s Result. **No `.cpp` file is used; all implementations must be written in `Result.hpp`.**
 
 ### Required Behavior
 - Represents either a success (`T`) or an error (`E`).  
-- Provide:
-  - `static Result<T, E> Ok(const T& value);`
-  - `static Result<T, E> Err(const E& error);`
-- Add:
-  - `bool is_ok() const noexcept;`
-  - `bool is_err() const noexcept;`
-  - `T unwrap() const;` — throws if holds error.  
-  - `E unwrap_err() const;` — throws if holds success.  
-- Internally use `std::variant<T, E>`.  
+- The header file `Result.hpp` contains **TODO comments** explaining what to implement.  
+- Implement all methods yourself:
+  - `static Result<T, E> Ok(const T& value);` — create a success result.  
+  - `static Result<T, E> Err(const E& error);` — create an error result.  
+  - `bool is_ok() const noexcept;` — check if the result is success.  
+  - `bool is_err() const noexcept;` — check if the result is an error.  
+  - `T unwrap() const;` — return success value; throw `std::runtime_error` if this is an error.  
+  - `E unwrap_err() const;` — return error value; throw `std::runtime_error` if this is a success.  
+- Internally, use `std::variant<T, E>` to store the value.  
 - Ensure exception safety when accessing variants.
 
 ### Concepts Covered
@@ -149,8 +149,6 @@ cmake -S . -B build -DCMAKE_BUILD_TYPE=Debug
 cmake --build build
 ctest --test-dir build --output-on-failure
 ```
-‍‍‍‍‍
-‍‍
 CI/CTest runs automatically when you push.
 All tests must pass for full credit.
 
