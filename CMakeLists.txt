@@ -32,10 +32,10 @@ target_link_libraries(ResourceLogger_tests PRIVATE ResourceLogger)
 add_test(NAME ResourceLogger_tests COMMAND $<TARGET_FILE:ResourceLogger_tests>)
 
 # --- Task 4: TaskScheduler ---
-add_library(TaskScheduler src/map_container.cpp)
+add_library(TaskScheduler src/TaskScheduler.cpp)
 target_include_directories(TaskScheduler PUBLIC include)
 
-add_executable(TaskScheduler_tests tests/test_map_container.cpp)
+add_executable(TaskScheduler_tests tests/test_TaskScheduler.cpp)
 target_link_libraries(TaskScheduler_tests PRIVATE TaskScheduler)
 add_test(NAME TaskScheduler_tests COMMAND $<TARGET_FILE:TaskScheduler_tests>)
 
