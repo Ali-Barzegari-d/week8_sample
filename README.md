@@ -15,8 +15,7 @@ The lab consists of five graded tasks:
 - **ConfigManager** – file-based configuration management with exception safety.  
 - **Result<T, E>** – header-only generic result type; you will implement the methods using TODO hints.  
 - **TaskScheduler** – task execution pipeline with exception handling.  
-- **Advanced ResourceLogger** – RAII-based logging system with timestamps and move semantics.  
-- **AdvancedTypeAnalyzer** – compile-time type classification using C++20 concepts.  
+- **ResourceLogger** – RAII-based logging system with timestamps and move semantics.    
 
 All work is autograded via CI/CTest.  
 When the GitHub Actions build is green, you earn full marks.
@@ -96,7 +95,7 @@ Function objects, task management, exception handling, safe sequential execution
 
 ---
 
-## 6. Task D — Advanced ResourceLogger
+## 6. Task D — ResourceLogger
 
 You are given a class **ResourceLogger** that logs messages with timestamps and levels.
 
@@ -117,30 +116,7 @@ RAII, file handling, timestamps (`std::chrono`), move semantics, exception safet
 
 ---
 
-## 7. Task E — AdvancedTypeAnalyzer
-
-You are given a class **AdvancedTypeAnalyzer** that analyzes types at compile time using C++20 concepts.
-
-### Required Behavior
-- Classify types into:
-  - numeric types (`int`, `double`, etc.)  
-  - string-like types (`std::string`, `const char*`)  
-  - pointers (`T*`)  
-  - containers (`std::vector<T>`, etc.)  
-- Print descriptions such as:
-  - `numeric type detected`
-  - `pointer to numeric type detected`
-  - `container of string-like type detected`
-- Support nested containers (e.g., `std::vector<std::vector<int>>`).  
-- Unsupported types should cause a compile-time error (no generic fallback).  
-- Use recursion and type traits for nested detection.
-
-### Concepts Covered
-Concepts, type traits, template recursion, compile-time reasoning, SFINAE and constraint design.
-
----
-
-## 8. Building and Running
+## 7. Building and Running
 
 Recommended workflow:
 
@@ -152,7 +128,7 @@ ctest --test-dir build --output-on-failure
 CI/CTest runs automatically when you push.
 All tests must pass for full credit.
 
-## 9. Grading
+## 8. Grading
 100% autograded: your score = proportion of passing tests.
 
 No manual grading.
