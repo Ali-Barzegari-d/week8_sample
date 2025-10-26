@@ -39,10 +39,10 @@ add_executable(TaskScheduler_tests tests/test_TaskScheduler.cpp)
 target_link_libraries(TaskScheduler_tests PRIVATE TaskScheduler)
 add_test(NAME TaskScheduler_tests COMMAND $<TARGET_FILE:TaskScheduler_tests>)
 
-# --- Task 5: AdvancedTypeAnalyzer ---
-add_library(AdvancedTypeAnalyzer src/AdvancedTypeAnalyzer.cpp)
-target_include_directories(AdvancedTypeAnalyzer PUBLIC include)
+# --- Task 5: TypeAnalyzer ---
+add_library(TypeAnalyzer src/TypeAnalyzer.cpp)
+target_include_directories(TypeAnalyzer PUBLIC include)
 
-add_executable(AdvancedTypeAnalyzer_tests tests/test_AdvancedTypeAnalyzer.cpp)
-target_link_libraries(AdvancedTypeAnalyzer_tests PRIVATE AdvancedTypeAnalyzer)
-add_test(NAME AdvancedTypeAnalyzer_tests COMMAND $<TARGET_FILE:AdvancedTypeAnalyzer_tests>)
+add_executable(TypeAnalyzer_tests tests/test_TypeAnalyzer.cpp)
+target_link_libraries(TypeAnalyzer_tests PRIVATE TypeAnalyzer)
+add_test(NAME TypeAnalyzer_tests COMMAND $<TARGET_FILE:TypeAnalyzer_tests>)
